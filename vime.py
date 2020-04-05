@@ -113,6 +113,7 @@ class vime(nn.Module):
         H_mu = (1 + torch.exp(self.param_rho)).log().pow(-2).detach()
         H_rho = (1 + torch.exp(self.param_rho)).log().pow(-2) * 2 * torch.exp(2 * self.param_rho) * (1 + torch.exp(self.param_rho)).pow(-2)
         H_rho = H_rho.detach()
+        # * find KL divergence partial guide to mu and rho
         H = torch.cat([H_mu, H_rho], -1).detach()
         return H
 
@@ -149,5 +150,6 @@ class vime(nn.Module):
         if len(self.kl_buffer) == 0:
             relative_gains = info_gains
         else:
+            # * prevent the mean of the previous kl to be ZERO
             relative_gains = info_gains / np.mean(self.kl_buffer) if np.mean(self.kl_buffer) != 0 else info_gains
         return rewards + self.eta * relative_gains

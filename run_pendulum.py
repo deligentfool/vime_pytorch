@@ -4,6 +4,7 @@ import gym
 from env_wrapper import normallized_action_wrapper
 
 if __name__ == '__main__':
+    # * vime may cost much time per episode
     env = normallized_action_wrapper(gym.make('Pendulum-v0'))
     vime_model = vime(
         observation_dim=env.observation_space.shape[0],
